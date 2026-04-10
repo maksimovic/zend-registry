@@ -106,12 +106,14 @@ class Zend_Registry extends ArrayObject
             throw new Zend_Exception("Argument is not a class name");
         }
 
-        /**
-         * @see Zend_Loader
-         */
         if (!class_exists($registryClassName)) {
-            // require_once 'Zend/Loader.php';
-            Zend_Loader::loadClass($registryClassName);
+            if (class_exists('Zend_Loader')) {
+                Zend_Loader::loadClass($registryClassName);
+            }
+
+            if (!class_exists($registryClassName, false)) {
+                throw new Zend_Exception("Registry class does not exist: '$registryClassName'");
+            }
         }
 
         self::$_registryClassName = $registryClassName;
